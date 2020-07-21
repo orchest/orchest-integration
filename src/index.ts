@@ -3,11 +3,11 @@ import {
 } from '@jupyterlab/application';
 
 import {
-  NotebookTools, INotebookTracker, NotebookPanel, NotebookTracker
+  NotebookTools, INotebookTracker
 } from '@jupyterlab/notebook';
 
 import {
-  DocumentManager, IDocumentManager
+  IDocumentManager
 } from '@jupyterlab/docmanager';
 /**
  * The plugin registration information.
@@ -15,14 +15,14 @@ import {
 const plugin: JupyterFrontEndPlugin<void> = {
   activate: (
     app: JupyterFrontEnd,
-    tracker: NotebookTracker,
-    docmanager: DocumentManager,
+    tracker: INotebookTracker,
+    docmanager: IDocumentManager,
   ) => {
     new OrchestIntegrationExtension(tracker, app, docmanager);
   },
   id: 'orchestintegration:orchestintegrationPlugin',
   autoStart: true,
-  requires: [INotebookTracker]
+  requires: [INotebookTracker, IDocumentManager]
 };
 
 declare global {
@@ -35,7 +35,7 @@ declare global {
 export
   class OrchestIntegrationExtension extends NotebookTools.Tool {
 
-  constructor(tracker: NotebookTracker, app: JupyterFrontEnd, docmanager: DocumentManager) {
+  constructor(tracker: INotebookTracker, app: JupyterFrontEnd, docmanager: IDocumentManager) {
     super();
 
     window._orchest_app = app;
