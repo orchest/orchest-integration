@@ -22,7 +22,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
 };
 
 declare global {
-  interface Window { app: JupyterFrontEnd; tracker: INotebookTracker; }
+  interface Window { _orchest_app: JupyterFrontEnd; _orchest_tracker: INotebookTracker; }
 }
 
 /**
@@ -39,8 +39,8 @@ export
     this.tracker = tracker;
     this.app = app;
 
-    window.app = this.app;
-    window.tracker = this.tracker;
+    window._orchest_app = this.app;
+    window._orchest_tracker = this.tracker;
   }
 
 
