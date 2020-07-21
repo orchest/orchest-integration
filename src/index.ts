@@ -3,18 +3,22 @@ import {
 } from '@jupyterlab/application';
 
 import {
-  NotebookTools, INotebookTracker, NotebookPanel
+  NotebookTools, INotebookTracker, NotebookPanel, NotebookTracker
 } from '@jupyterlab/notebook';
 
+import {
+  DocumentManager, IDocumentManager
+} from '@jupyterlab/docmanager';
 /**
  * The plugin registration information.
  */
 const plugin: JupyterFrontEndPlugin<void> = {
   activate: (
     app: JupyterFrontEnd,
-    tracker: INotebookTracker,
+    tracker: NotebookTracker,
+    docmanager: DocumentManager,
   ) => {
-    new OrchestIntegrationExtension(tracker, app);
+    new OrchestIntegrationExtension(tracker, app, docmanager);
   },
   id: 'orchestintegration:orchestintegrationPlugin',
   autoStart: true,
@@ -22,7 +26,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
 };
 
 declare global {
-  interface Window { _orchest_app: JupyterFrontEnd; _orchest_tracker: INotebookTracker; }
+  interface Window { _orchest_app: JupyterFrontEnd; _orchest_tracker: INotebookTracker; _orchest_docmanager: IDocumentManager}
 }
 
 /**
@@ -31,18 +35,13 @@ declare global {
 export
   class OrchestIntegrationExtension extends NotebookTools.Tool {
 
-  private tracker: INotebookTracker = null;
-  private app: JupyterFrontEnd = null;
-
-  constructor(tracker: INotebookTracker, app: JupyterFrontEnd) {
+  constructor(tracker: NotebookTracker, app: JupyterFrontEnd, docmanager: DocumentManager) {
     super();
-    this.tracker = tracker;
-    this.app = app;
 
-    window._orchest_app = this.app;
-    window._orchest_tracker = this.tracker;
+    window._orchest_app = app;
+    window._orchest_tracker = tracker;
+    window._orchest_docmanager = docmanager;
   }
-
 
 }
 
