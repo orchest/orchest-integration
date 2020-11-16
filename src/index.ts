@@ -47,15 +47,15 @@ export
       let tryInterval = setInterval(() => {
 
         try {
-          var originalRestart = window._orchest_tracker.currentWidget.sessionContext.session.kernel.__proto__.restart;
-          var _handleRestart = window._orchest_tracker.currentWidget.sessionContext.session.kernel.__proto__._handleRestart;
+          var originalRestart = Object.getPrototypeOf(window._orchest_tracker.currentWidget.sessionContext.session.kernel).restart;
+          var _handleRestart = Object.getPrototypeOf(window._orchest_tracker.currentWidget.sessionContext.session.kernel)._handleRestart;
 
           async function newRestart(this: any) {
             await originalRestart.apply(this);
             await _handleRestart.apply(this);
           }
 
-          window._orchest_tracker.currentWidget.sessionContext.session.kernel.__proto__.restart = newRestart;
+          Object.getPrototypeOf(window._orchest_tracker.currentWidget.sessionContext.session.kernel).restart = newRestart;
 
           clearInterval(tryInterval);
           console.log("JupyterLab kernel restart patched.");
