@@ -42,39 +42,6 @@ export
     window._orchest_tracker = tracker;
     window._orchest_docmanager = docmanager;
 
-    // Hot fix for kernel restarting
-    this.restartKernelPatch();
-
-  }
-
-  restartKernelPatch(){
-    let tryInterval = setInterval(() => {
-
-      try {
-        var originalRestart = Object.getPrototypeOf(window._orchest_tracker.currentWidget.sessionContext.session.kernel).restart;
-        var _handleRestart = Object.getPrototypeOf(window._orchest_tracker.currentWidget.sessionContext.session.kernel)._handleRestart;
-
-        async function newRestart(this: any) {
-          try {
-            await originalRestart.apply(this);
-          } catch(error){
-            console.warn(error);
-          }
-          try {
-            await _handleRestart.apply(this);
-          } catch(error){
-            console.warn(error);
-          }
-        }
-
-        Object.getPrototypeOf(window._orchest_tracker.currentWidget.sessionContext.session.kernel).restart = newRestart;
-
-        clearInterval(tryInterval);
-        console.log("JupyterLab kernel restart patched.");
-      } catch(error){
-        console.warn(error);
-      }
-    }, 1000);
   }
 
 }
